@@ -1,2 +1,2 @@
-# Proyecto-de-PG
-Este proyecto consiste en la creación de una simulación en 3D de la dentadura humana utilizando OpenGL. El objetivo es representar la estructura dental, permitiendo visualizar cada diente en detalle.
+# PG Project
+This project involves creating a 3D simulation of the human dentition using OpenGL. The goal is to represent the dental structure, allowing each tooth to be visualized in detail.
