@@ -1,0 +1,27 @@
+{
+  "name": "proyecto-de-pg",
+  "version": "1.0.0",
+  "description": "This project involves creating a 3D simulation of the human dentition using OpenGL. The goal is to represent the dental structure, allowing each tooth to be visualized in detail.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scarlett-gm/Proyecto-de-PG.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/scarlett-gm/Proyecto-de-PG/issues"
+  },
+  "homepage": "https://github.com/scarlett-gm/Proyecto-de-PG#readme",
+  "dependencies": {
+    "three": "^0.176.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.4"
+  }
+}
