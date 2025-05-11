@@ -1,13 +1,16 @@
 let scene, camera, renderer, controls, model;
-
 const MODEL_PATH = 'consultorio.glb';
+
+// Variables para rotación con teclado
+const rotationSpeed = 0.03;
+const keyboardState = {};
 
 init();
 
 function init() {
     // Configuración básica
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x222222); // Fondo más oscuro para mejor contraste
+    scene.background = new THREE.Color(0x222222);
 
     camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
     
@@ -25,6 +28,9 @@ function init() {
     // Configurar controles de cámara
     setupCameraControls();
 
+    // Configurar controles de teclado
+    setupKeyboardControls();
+
     // Configurar sistema de iluminación profesional
     setupLighting();
 
@@ -41,6 +47,70 @@ function setupCameraControls() {
     controls.dampingFactor = 0.1;
     controls.enablePan = false;
     controls.screenSpacePanning = false;
+    controls.minAzimuthAngle = -Math.PI / 2;
+    controls.maxAzimuthAngle = Math.PI / 2;
+    controls.minPolarAngle = Math.PI / 3;
+    controls.maxPolarAngle = Math.PI / 1.8;
+    
+    // Desactivar damping cuando se usan teclas
+    controls.addEventListener('change', () => {
+        if (Object.values(keyboardState).some(state => state)) {
+            controls.enableDamping = false;
+        } else {
+            controls.enableDamping = true;
+        }
+    });
+}
+
+function setupKeyboardControls() {
+    // Listeners para teclado
+    window.addEventListener('keydown', (event) => {
+        const key = event.key.toLowerCase();
+        if (['w','a','s','d'].includes(key)) {
+            keyboardState[key] = true;
+        }
+    });
+    
+    window.addEventListener('keyup', (event) => {
+        const key = event.key.toLowerCase();
+        if (['w','a','s','d'].includes(key)) {
+            keyboardState[key] = false;
+        }
+    });
+}
+
+function handleKeyboardRotation() {
+    // Obtener la posición actual de la cámara relativa al target
+    const offset = new THREE.Vector3().subVectors(camera.position, controls.target);
+    
+    // Rotación vertical (W/S)
+    if (keyboardState['w']) {
+        // Rotar hacia arriba alrededor del eje X local
+        offset.applyAxisAngle(new THREE.Vector3(1, 0, 0), rotationSpeed);
+    }
+    if (keyboardState['s']) {
+        // Rotar hacia abajo alrededor del eje X local
+        offset.applyAxisAngle(new THREE.Vector3(1, 0, 0), -rotationSpeed);
+    }
+    
+    // Rotación horizontal (A/D)
+    if (keyboardState['a']) {
+        // Rotar hacia la izquierda alrededor del eje Y global
+        offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), rotationSpeed);
+    }
+    if (keyboardState['d']) {
+        // Rotar hacia la derecha alrededor del eje Y global
+        offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), -rotationSpeed);
+    }
+    
+    // Aplicar la nueva posición de la cámara
+    camera.position.copy(controls.target).add(offset);
+    
+    // Asegurarse de que la cámara sigue mirando al target
+    camera.lookAt(controls.target);
+    
+    // Actualizar los controles
+    controls.update();
 }
 
 function setupLighting() {
@@ -96,13 +166,11 @@ function loadModel() {
         (gltf) => {
             model = gltf.scene;
             
-            // Configurar sombras para todos los objetos del modelo
             model.traverse((child) => {
                 if (child.isMesh) {
                     child.castShadow = true;
                     child.receiveShadow = true;
                     
-                    // Mejorar materiales si es necesario
                     if (child.material) {
                         child.material.roughness = 0.3;
                         child.material.metalness = 0.1;
@@ -128,11 +196,7 @@ function loadModel() {
             
             controls.minDistance = size.length() * 0.05;
             controls.maxDistance = size.length() * 0.3;
-            controls.minAzimuthAngle = -Math.PI / 2;
-            controls.maxAzimuthAngle = Math.PI / 2;
-            controls.minPolarAngle = Math.PI / 3;
-            controls.maxPolarAngle = Math.PI / 1.8;
-
+            
             controls.update();
             document.getElementById('loading').style.display = 'none';
         },
@@ -158,6 +222,12 @@ function onWindowResize() {
 
 function animate() {
     requestAnimationFrame(animate);
+    
+    // Rotar cámara si hay teclas presionadas
+    if (Object.values(keyboardState).some(state => state)) {
+        handleKeyboardRotation();
+    }
+    
     controls.update();
     renderer.render(scene, camera);
 }
