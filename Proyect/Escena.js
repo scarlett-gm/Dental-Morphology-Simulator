@@ -1,14 +1,16 @@
-let scene, camera, renderer, controls, model;
+let scene, camera, renderer, controls, model,sound;
+
 const MODEL_PATH = 'consultorio.glb';
 
-// Variables para rotación con teclado
 const rotationSpeed = 0.03;
 const keyboardState = {};
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
 
 init();
 
 function init() {
-    // Configuración básica
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x222222);
 
@@ -25,16 +27,10 @@ function init() {
     renderer.toneMappingExposure = 1;
     document.body.appendChild(renderer.domElement);
 
-    // Configurar controles de cámara
     setupCameraControls();
-
-    // Configurar controles de teclado
     setupKeyboardControls();
-
-    // Configurar sistema de iluminación profesional
     setupLighting();
-
-    // Cargar modelo
+     setupAudio(); 
     loadModel();
 
     window.addEventListener('resize', onWindowResize);
@@ -52,7 +48,6 @@ function setupCameraControls() {
     controls.minPolarAngle = Math.PI / 3;
     controls.maxPolarAngle = Math.PI / 1.8;
     
-    // Desactivar damping cuando se usan teclas
     controls.addEventListener('change', () => {
         if (Object.values(keyboardState).some(state => state)) {
             controls.enableDamping = false;
@@ -63,7 +58,6 @@ function setupCameraControls() {
 }
 
 function setupKeyboardControls() {
-    // Listeners para teclado
     window.addEventListener('keydown', (event) => {
         const key = event.key.toLowerCase();
         if (['w','a','s','d'].includes(key)) {
@@ -80,82 +74,95 @@ function setupKeyboardControls() {
 }
 
 function handleKeyboardRotation() {
-    // Obtener la posición actual de la cámara relativa al target
     const offset = new THREE.Vector3().subVectors(camera.position, controls.target);
     
-    // Rotación vertical (W/S)
     if (keyboardState['w']) {
-        // Rotar hacia arriba alrededor del eje X local
         offset.applyAxisAngle(new THREE.Vector3(1, 0, 0), rotationSpeed);
     }
     if (keyboardState['s']) {
-        // Rotar hacia abajo alrededor del eje X local
         offset.applyAxisAngle(new THREE.Vector3(1, 0, 0), -rotationSpeed);
     }
-    
-    // Rotación horizontal (A/D)
     if (keyboardState['a']) {
-        // Rotar hacia la izquierda alrededor del eje Y global
         offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), rotationSpeed);
     }
     if (keyboardState['d']) {
-        // Rotar hacia la derecha alrededor del eje Y global
         offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), -rotationSpeed);
     }
     
-    // Aplicar la nueva posición de la cámara
     camera.position.copy(controls.target).add(offset);
-    
-    // Asegurarse de que la cámara sigue mirando al target
     camera.lookAt(controls.target);
-    
-    // Actualizar los controles
     controls.update();
 }
 
 function setupLighting() {
-    // 1. Luz ambiental general (suave)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    
+    const ambientLight = new THREE.AmbientLight(0xfff4e6, 0.25);
     scene.add(ambientLight);
 
-    // 2. Luz principal direccional (como luz de techo)
-    const mainLight = new THREE.DirectionalLight(0xfff4e6, 0.8);
-    mainLight.position.set(0.5, 1, 0.5);
+    
+    const mainLight = new THREE.DirectionalLight(0xfff9e6, 1.2);
+    mainLight.position.set(2, 3, 1); // Posición más alta y lateral
     mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 2048;
-    mainLight.shadow.mapSize.height = 2048;
-    mainLight.shadow.camera.near = 0.5;
-    mainLight.shadow.camera.far = 10;
-    mainLight.shadow.camera.left = -5;
-    mainLight.shadow.camera.right = 5;
-    mainLight.shadow.camera.top = 5;
-    mainLight.shadow.camera.bottom = -5;
-    mainLight.shadow.bias = -0.001;
+    
+    // Configuración avanzada de sombras
+    mainLight.shadow.mapSize.width = 4096;
+    mainLight.shadow.mapSize.height = 4096;
+    mainLight.shadow.camera.near = 0.2;
+    mainLight.shadow.camera.far = 15;
+    mainLight.shadow.camera.left = -7;
+    mainLight.shadow.camera.right = 7;
+    mainLight.shadow.camera.top = 7;
+    mainLight.shadow.camera.bottom = -7;
+    mainLight.shadow.bias = -0.0001;
+    mainLight.shadow.normalBias = 0.05;
     scene.add(mainLight);
 
-    // 3. Luz de relleno (para reducir sombras duras)
-    const fillLight = new THREE.DirectionalLight(0xccf0ff, 0.3);
-    fillLight.position.set(-0.5, 0.5, -0.5);
+    // 3. Luz de relleno (azul fría para contraste)
+    const fillLight = new THREE.DirectionalLight(0xccf0ff, 0.35);
+    fillLight.position.set(-1, 0.5, -1);
     scene.add(fillLight);
 
-    // 4. Luz focal (como lámpara dental)
-    const spotLight = new THREE.SpotLight(0xfff9e6, 1, 10, Math.PI/6, 0.5, 1);
-    spotLight.position.set(0, 1.5, 1);
-    spotLight.target.position.set(0, 0.8, 0);
-    spotLight.castShadow = true;
-    spotLight.shadow.mapSize.width = 1024;
-    spotLight.shadow.mapSize.height = 1024;
-    scene.add(spotLight);
-    scene.add(spotLight.target);
+    // 4. Spotlight principal (para la silla dental)
+    const dentalSpot = new THREE.SpotLight(0xffffff, 2.5, 8, Math.PI/6, 0.4, 1);
+    dentalSpot.position.set(0, 2, 1.5); 
+    dentalSpot.target.position.set(0, 0.8, 0); 
+    dentalSpot.castShadow = true;
+    dentalSpot.shadow.mapSize.width = 2048;
+    dentalSpot.shadow.mapSize.height = 2048;
+    dentalSpot.shadow.camera.near = 0.5;
+    dentalSpot.shadow.camera.far = 10;
+    scene.add(dentalSpot);
+    scene.add(dentalSpot.target);
 
-    // 5. Luces adicionales (opcional)
-    const light1 = new THREE.PointLight(0xfff4e6, 0.5, 5);
-    light1.position.set(1, 1.2, 1);
+    // 5. Luces de ambiente (puntuales)
+    const light1 = new THREE.PointLight(0xfff4e6, 0.8, 4);
+    light1.position.set(1.2, 1.5, 1);
+    light1.decay = 2;
     scene.add(light1);
 
-    const light2 = new THREE.PointLight(0xe6f4ff, 0.3, 5);
-    light2.position.set(-1, 1, 1);
+    const light2 = new THREE.PointLight(0xe6f4ff, 0.6, 4);
+    light2.position.set(-1.2, 1.2, 1);
+    light2.decay = 2;
     scene.add(light2);
+
+    // 6. Luz de área para iluminación general
+    const areaLight = new THREE.RectAreaLight(0xfff9e6, 1.5, 3, 3);
+    areaLight.position.set(0, 2.5, -1);
+    areaLight.rotation.x = Math.PI / 2;
+    scene.add(areaLight);
+
+    // 7. Hemisphere light para ambiente más natural
+    const hemisphereLight = new THREE.HemisphereLight(
+        0xfff4e6, // Color cielo (cálido)
+        0x1a2b40, // Color tierra (frío)
+        0.4 // Intensidad
+    );
+    scene.add(hemisphereLight);
+
+    // 8. Luz de emergencia (roja tenue)
+    const emergencyLight = new THREE.PointLight(0xff0000, 0.3, 3);
+    emergencyLight.position.set(0, 2.3, -1.8);
+    scene.add(emergencyLight);
 }
 
 function loadModel() {
@@ -170,7 +177,6 @@ function loadModel() {
                 if (child.isMesh) {
                     child.castShadow = true;
                     child.receiveShadow = true;
-                    
                     if (child.material) {
                         child.material.roughness = 0.3;
                         child.material.metalness = 0.1;
@@ -180,7 +186,6 @@ function loadModel() {
             
             scene.add(model);
 
-            // Ajustar cámara al modelo
             const box = new THREE.Box3().setFromObject(model);
             const center = new THREE.Vector3();
             const size = new THREE.Vector3();
@@ -199,6 +204,7 @@ function loadModel() {
             
             controls.update();
             document.getElementById('loading').style.display = 'none';
+            startDialog(); 
         },
         (xhr) => {
             const percent = (xhr.loaded / xhr.total * 100).toFixed(0);
@@ -212,6 +218,32 @@ function loadModel() {
             `;
         }
     );
+
+    // Detección de clic izquierdo sobre una zona específica
+    renderer.domElement.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0) return;
+
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(scene.children, true);
+
+        if (intersects.length > 0) {
+            const intersected = intersects[0].object;
+
+            if (intersected.name === "Chair2_blinn1_0") {
+                alert("Haz hecho clic en la Silla 2");
+               // Guardar estado actual antes de cambiar
+    history.pushState({ from3DScene: true }, '', window.location.href);
+    
+    // Ir a Adult.html
+    window.location.href = 'Adult.html';
+            } else {
+                console.log("Clic en:", intersected.name);
+            }
+        }
+    });
 }
 
 function onWindowResize() {
@@ -222,12 +254,173 @@ function onWindowResize() {
 
 function animate() {
     requestAnimationFrame(animate);
-    
-    // Rotar cámara si hay teclas presionadas
+
     if (Object.values(keyboardState).some(state => state)) {
         handleKeyboardRotation();
     }
-    
+
     controls.update();
     renderer.render(scene, camera);
 }
+
+function setupAudio() {
+    // Crear listener y añadirlo a la cámara
+    const listener = new THREE.AudioListener();
+    camera.add(listener);
+
+    // Crear audio
+    const sound = new THREE.Audio(listener);
+    const audioLoader = new THREE.AudioLoader();
+    
+    // Cargar y configurar el sonido
+    audioLoader.load('Recursos/Dentist-Office-Soundscape.mp3', function(buffer) {
+        sound.setBuffer(buffer);
+        sound.setLoop(true);
+        sound.setVolume(0.5); // Volumen inicial al 50%
+        sound.play();
+        
+        // Actualizar elementos de control
+        updateAudioControls(sound);
+    });
+
+    // Configurar controles de audio
+    function updateAudioControls(audio) {
+        const toggleBtn = document.getElementById('toggle-audio');
+        const volumeSlider = document.getElementById('volume-slider');
+        
+        if (toggleBtn) {
+            toggleBtn.textContent = audio.isPlaying ? '🔊' : '🔇';
+            toggleBtn.classList.toggle('playing', audio.isPlaying);
+        }
+        
+        if (volumeSlider) {
+            volumeSlider.value = audio.getVolume() * 100;
+        }
+    }
+
+    // Control de encendido/apagado
+    const toggleBtn = document.getElementById('toggle-audio');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            if (sound.isPlaying) {
+                sound.pause();
+            } else {
+                sound.play();
+            }
+            updateAudioControls(sound);
+        });
+    }
+
+    // Control de volumen
+    const volumeSlider = document.getElementById('volume-slider');
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', function() {
+            sound.setVolume(this.value / 100);
+            updateAudioControls(sound);
+        });
+    }
+
+    // Manejar errores
+    audioLoader.load('Recursos/Dentist-Office-Soundscape.mp3', 
+        () => {}, // Éxito ya manejado
+        () => console.log('Cargando audio...'),
+        (error) => {
+            console.error('Error al cargar el audio:', error);
+            const errorElement = document.getElementById('audio-error');
+            if (errorElement) {
+                errorElement.textContent = 'Error al cargar el audio';
+                errorElement.style.display = 'block';
+            }
+        }
+    );
+
+    return sound;
+}
+    
+
+    const dialogMessages = [
+    "¡Hola! Bienvenido al consultorio.",
+    "Aquí realizamos controles dentales regulares.",
+    "Haz clic en los objetos para obtener más información."
+    ];
+
+let dialogIndex = 0;
+const dialogBox = document.getElementById('dialog-box');
+const messageBox = document.getElementById('message-box');
+
+function startDialog() {
+  dialogBox.style.display = 'flex';
+  dialogIndex = 0;
+  showDialogLine();
+}
+
+function showDialogLine() {
+  messageBox.textContent = dialogMessages[dialogIndex];
+}
+
+function advanceDialog() {
+  if (dialogIndex < dialogMessages.length - 1) {
+    dialogIndex++;
+    showDialogLine();
+  } else {
+    dialogBox.style.display = 'none';
+  }
+}
+
+window.addEventListener('keydown', function (e) {
+  if (e.key === "Enter" && dialogBox.style.display === 'flex') {
+    advanceDialog();
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
