@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Guía de Salud Dental</title>
+
+  <!-- Iconos de Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+
+  <style>
+    /* Paleta de azules y neutros */
+    :root {
+      --azul-oscuro: #1e3a8a;
+      --azul-medio: #3b82f6;
+      --azul-claro: #bfdbfe;
+      --azul-suave: #eff6ff;
+      --gris-claro: #f9fafb;
+      --gris-medio: #64748b;
+      --blanco: #ffffff;
+      --negro-suave: #111827;
+      --sombra: rgba(59, 130, 246, 0.2);
+    }
+
+    /* Reset básico */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--azul-suave);
+      color: var(--negro-suave);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--azul-oscuro);
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: var(--azul-medio);
+    }
+
+    /* HEADER */
+    header {
+      background-color: var(--azul-oscuro);
+      color: var(--blanco);
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 6px var(--sombra);
+      gap: 1rem;
+    }
+
+    #logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 2px rgba(255 255 255 / 0.7));
+    }
+
+    header h1 {
+      flex: 1;
+      font-weight: 700;
+      font-size: 1.5rem;
+      text-align: center;
+      user-select: none;
+    }
+
+    .utilidades {
+      display: flex;
+      gap: 0.7rem;
+    }
+
+    .util-btn {
+      background: var(--azul-medio);
+      border: none;
+      color: var(--blanco);
+      padding: 0.5rem 0.8rem;
+      font-size: 1.25rem;
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .util-btn:hover,
+    .util-btn:focus {
+      background: var(--azul-oscuro);
+      outline: none;
+    }
+
+    /* MAIN CONTENEDOR */
+    main.contenedor-guia {
+      flex-grow: 1;
+      max-width: 1100px;
+      margin: 2rem auto 3rem;
+      padding: 0 1rem;
+    }
+
+    /* Botón de regreso */
+    .boton-regreso {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      background-color: var(--azul-claro);
+      color: var(--azul-oscuro);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      box-shadow: 0 3px 6px var(--sombra);
+      transition: background-color 0.3s ease;
+      margin-bottom: 1.5rem;
+    }
+    .boton-regreso i {
+      font-size: 1.1rem;
+    }
+    .boton-regreso:hover {
+      background-color: var(--azul-medio);
+      color: var(--blanco);
+      box-shadow: 0 5px 10px var(--azul-medio);
+    }
+
+    /* HERO */
+    .hero {
+      display: flex;
+      background-color: var(--blanco);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 5px 15px var(--sombra);
+      margin-bottom: 3rem;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-texto {
+      flex: 1 1 320px;
+    }
+    .hero-texto h2 {
+      font-size: 2rem;
+      color: var(--azul-oscuro);
+      margin-bottom: 0.6rem;
+      font-weight: 700;
+    }
+    .hero-texto p {
+      font-size: 1.1rem;
+      color: var(--gris-medio);
+    }
+
+    .hero-imagen img {
+      width: 120px;
+      filter: drop-shadow(0 0 2px var(--azul-medio));
+    }
+
+    /* SECCIONES */
+    section.seccion {
+      background-color: var(--blanco);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 5px 15px var(--sombra);
+    }
+
+    .seccion-titulo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--azul-oscuro);
+      margin-bottom: 1.8rem;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* Tarjetas Cuidados Esenciales */
+    .tarjetas {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .tarjeta {
+      background-color: var(--azul-suave);
+      flex: 1 1 250px;
+      max-width: 280px;
+      padding: 1.6rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--sombra);
+      transition: transform 0.3s ease;
+      cursor: default;
+    }
+    .tarjeta:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px var(--azul-medio);
+    }
+
+    .tarjeta-icono {
+      font-size: 2.5rem;
+      color: var(--azul-medio);
+      margin-bottom: 1rem;
+      text-align: center;
+      user-select: none;
+    }
+
+    .tarjeta h3 {
+      color: var(--azul-oscuro);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .tarjeta ul {
+      list-style: disc inside;
+      color: var(--gris-medio);
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    /* Sección curiosidades */
+    .seccion-curiosidades .curiosidad {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      background-color: var(--azul-suave);
+      border-radius: 12px;
+      padding: 1.8rem;
+      box-shadow: 0 4px 12px var(--sombra);
+      user-select: none;
+    }
+
+    .curiosidad-invertida {
+      flex-direction: row-reverse;
+    }
+
+    .curiosidad-imagen {
+      flex: 1 1 180px;
+      text-align: center;
+    }
+    .curiosidad-imagen img {
+      max-width: 160px;
+      filter: drop-shadow(0 0 4px var(--azul-medio));
+      border-radius: 12px;
+    }
+
+    .curiosidad-texto {
+      flex: 2 1 300px;
+      color: var(--azul-oscuro);
+    }
+
+    .curiosidad-texto h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    .curiosidad-texto p {
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      color: var(--gris-medio);
+      line-height: 1.5;
+    }
+    .dato-destacado {
+      font-weight: 700;
+      color: var(--azul-medio);
+      font-style: italic;
+      background-color: var(--azul-claro);
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      user-select: text;
+    }
+
+    /* Mitos vs Realidad */
+    .mitos {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .mito-card {
+      flex: 1 1 280px;
+      border-radius: 12px;
+      padding: 1.6rem 1.4rem;
+      box-shadow: 0 4px 12px var(--sombra);
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: transform 0.3s ease;
+    }
+    .mito-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px var(--azul-medio);
+    }
+
+    .mito-falso {
+      background-color: #fee2e2; /* rojo suave */
+      border: 2px solid #f87171;
+      color: #991b1b;
+    }
+    .mito-verdadero {
+      background-color: #dcfce7; /* verde suave */
+      border: 2px solid #4ade80;
+      color: #166534;
+    }
+
+    .mito-card h3 {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    .mito-card p {
+      font-size: 1rem;
+      font-style: italic;
+      line-height: 1.3;
+    }
+
+    .mito-explicacion {
+      font-size: 0.95rem;
+      font-style: normal;
+      margin-top: 0.3rem;
+      color: var(--gris-medio);
+      user-select: text;
+    }
+
+    /* FOOTER */
+    footer {
+      background-color: var(--azul-oscuro);
+      color: var(--blanco);
+      padding: 1rem 2rem;
+      text-align: center;
+      box-shadow: 0 -2px 6px var(--sombra);
+      user-select: none;
+    }
+    .footer-contenido {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-contenido p {
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    .footer-redes a {
+      color: var(--blanco);
+      margin-left: 0.6rem;
+      font-size: 1.4rem;
+      transition: color 0.3s ease;
+    }
+    .footer-redes a:hover {
+      color: var(--azul-medio);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        justify-content: center;
+        gap: 1rem;
+      }
+      header h1 {
+        font-size: 1.3rem;
+      }
+      .hero {
+        flex-direction: column;
+        padding: 1.5rem;
+      }
+      .tarjetas,
+      .mitos {
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+      .curiosidad,
+      .curiosidad-invertida {
+        flex-direction: column !important;
+        text-align: center;
+      }
+      .curiosidad-texto,
+      .curiosidad-imagen {
+        flex: unset;
+      }
+      .curiosidad-imagen img {
+        margin: 0 auto;
+      }
+      .footer-contenido {
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ────────────────  ENCABEZADO  ──────────────── -->
+  <header>
+    <img src="Recursos/logo.png" alt="Logo" id="logo" />
+    <h1 class="translate" data-key="title">Guía Completa de Salud Dental</h1>
+    <div class="utilidades">
+      <button id="audioBtn" class="util-btn" title="Reproducir/Pausar audio">🔊</button>
+      <button id="langBtn" class="util-btn" title="Cambiar idioma">🇪🇸</button>
+      <a href="Recursos/manual.pdf" target="_blank" class="util-btn" title="Manual">📘</a>
+    </div>
+  </header>
+
+  <!-- ────────────────  CONTENIDO PRINCIPAL  ──────────────── -->
+  <main class="contenedor-guia">
+    <!-- ▸ Botón de regreso -->
+    <a href="index.html" class="boton-regreso">
+      <i class="fas fa-arrow-left"></i> <span class="translate" data-key="backButton">Volver al Simulador</span>
+    </a>
+
+    <!-- ▸ Hero Banner -->
+    <section class="hero">
+      <div class="hero-texto">
+        <h2 class="translate" data-key="heroTitle">¡Tu sonrisa es tu mejor accesorio!</h2>
+        <p class="translate" data-key="heroSubtitle">Descubre cómo cuidarla con datos científicos y curiosidades fascinantes.</p>
+      </div>
+      <div class="hero-imagen">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/1869/1869679.png"
+          alt="Icono dental"
+        />
+      </div>
+    </section>
+
+    <!-- ▸ Sección 1: Cuidados básicos -->
+    <section class="seccion">
+      <h2 class="seccion-titulo"><i class="fas fa-tooth"></i> <span class="translate" data-key="section1Title">Cuidados esenciales</span></h2>
+      <div class="tarjetas">
+        <article class="tarjeta">
+          <div class="tarjeta-icono"><i class="fas fa-brush"></i></div>
+          <h3 class="translate" data-key="brushingTitle">Cepillado diario</h3>
+          <ul>
+            <li class="translate" data-key="brushingTip1">Usa una pasta dental con flúor.</li>
+            <li class="translate" data-key="brushingTip2">Cepíllate al menos 2 minutos, 2 veces al día.</li>
+            <li class="translate" data-key="brushingTip3">Cambia tu cepillo cada 3 meses.</li>
+          </ul>
+        </article>
+        <article class="tarjeta">
+          <div class="tarjeta-icono"><i class="fas fa-spa"></i></div>
+          <h3 class="translate" data-key="flossTitle">Hilo dental</h3>
+          <ul>
+            <li class="translate" data-key="flossTip1">Utilízalo para remover placa entre dientes.</li>
+            <li class="translate" data-key="flossTip2">Hazlo suavemente para evitar heridas.</li>
+            <li class="translate" data-key="flossTip3">Úsalo diariamente para mejores resultados.</li>
+          </ul>
+        </article>
+        <article class="tarjeta">
+          <div class="tarjeta-icono"><i class="fas fa-ban"></i></div>
+          <h3 class="translate" data-key="tobaccoTitle">Evita el tabaco</h3>
+          <ul>
+            <li class="translate" data-key="tobaccoTip1">El tabaco mancha y daña tus dientes.</li>
+            <li class="translate" data-key="tobaccoTip2">Incrementa riesgo de cáncer oral.</li>
+            <li class="translate" data-key="tobaccoTip3">Disminuye la capacidad de curación de encías.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ▸ Sección 2: Curiosidades -->
+    <section class="seccion seccion-curiosidades">
+      <h2 class="seccion-titulo"><i class="fas fa-lightbulb"></i> <span class="translate" data-key="section2Title">Curiosidades</span></h2>
+
+      <article class="curiosidad">
+        <div class="curiosidad-imagen">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+            alt="Mordida perfecta"
+          />
+        </div>
+        <div class="curiosidad-texto">
+          <h3 class="translate" data-key="biteTitle">Mordida perfecta</h3>
+          <p class="translate" data-key="biteText">Una mordida ideal distribuye la presión de masticar uniformemente, previniendo el desgaste dental.</p>
+          <p class="dato-destacado translate" data-key="biteFact">Dato: Menos del 5% de la población tiene una mordida perfecta.</p>
+        </div>
+      </article>
+
+      <article class="curiosidad curiosidad-invertida">
+        <div class="curiosidad-imagen">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/1490/1490599.png"
+            alt="Salud bucal"
+          />
+        </div>
+        <div class="curiosidad-texto">
+          <h3 class="translate" data-key="healthTitle">Salud bucal y salud general</h3>
+          <p class="translate" data-key="healthText">Las bacterias de la boca pueden afectar el corazón, el cerebro y otros órganos si no se controlan adecuadamente.</p>
+          <p class="dato-destacado translate" data-key="healthFact">Dato: La enfermedad periodontal está relacionada con enfermedades cardíacas.</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- ▸ Sección 3: Mitos y realidades -->
+    <section class="seccion">
+      <h2 class="seccion-titulo"><i class="fas fa-question-circle"></i> <span class="translate" data-key="section3Title">Mitos y Realidades</span></h2>
+      <div class="mitos">
+        <article class="mito-card mito-falso">
+          <h3><i class="fas fa-times-circle"></i> <span class="translate" data-key="mythLabel">Mito</span></h3>
+          <p class="translate" data-key="myth1">El blanqueamiento daña el esmalte dental.</p>
+          <p class="mito-explicacion translate" data-key="myth1Explanation">En realidad, cuando se realiza correctamente bajo supervisión, es seguro y no daña el esmalte.</p>
+        </article>
+
+        <article class="mito-card mito-verdadero">
+          <h3><i class="fas fa-check-circle"></i> <span class="translate" data-key="factLabel">Realidad</span></h3>
+          <p class="translate" data-key="fact1">El azúcar contribuye a la caries dental.</p>
+          <p class="mito-explicacion translate" data-key="fact1Explanation">Las bacterias en la boca fermentan el azúcar y producen ácidos que desmineralizan el esmalte.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- ────────────────  FOOTER  ──────────────── -->
+  <footer>
+    <div class="footer-contenido">
+      <p class="translate" data-key="copyright">&copy; 2025 Dental Morphology Simulator in WebGL </p>
+    </div>
+  </footer>
+
+  <!-- ────────────────  SCRIPTS  ──────────────── -->
+  <script>
+    // Variables de estado
+    let audioPlaying = false;
+    let currentLanguage = 'es'; 
+    
+    // Textos en diferentes idiomas
+    const translations = {
+      es: {
+        // Header
+        title: "Guía Completa de Salud Dental",
+        audioBtnTitle: "Reproducir/Pausar audio",
+        langBtnTitle: "Cambiar a inglés",
+        manualBtnTitle: "Manual",
+        
+        // Main
+        backButton: "Volver al Simulador",
+        heroTitle: "¡Tu sonrisa es tu mejor accesorio!",
+        heroSubtitle: "Descubre cómo cuidarla con datos científicos y curiosidades fascinantes.",
+        
+        // Sección 1
+        section1Title: "Cuidados esenciales",
+        brushingTitle: "Cepillado diario",
+        brushingTip1: "Usa una pasta dental con flúor.",
+        brushingTip2: "Cepíllate al menos 2 minutos, 2 veces al día.",
+        brushingTip3: "Cambia tu cepillo cada 3 meses.",
+        flossTitle: "Hilo dental",
+        flossTip1: "Utilízalo para remover placa entre dientes.",
+        flossTip2: "Hazlo suavemente para evitar heridas.",
+        flossTip3: "Úsalo diariamente para mejores resultados.",
+        tobaccoTitle: "Evita el tabaco",
+        tobaccoTip1: "El tabaco mancha y daña tus dientes.",
+        tobaccoTip2: "Incrementa riesgo de cáncer oral.",
+        tobaccoTip3: "Disminuye la capacidad de curación de encías.",
+        
+        // Sección 2
+        section2Title: "Curiosidades",
+        biteTitle: "Mordida perfecta",
+        biteText: "Una mordida ideal distribuye la presión de masticar uniformemente, previniendo el desgaste dental.",
+        biteFact: "Dato: Menos del 5% de la población tiene una mordida perfecta.",
+        healthTitle: "Salud bucal y salud general",
+        healthText: "Las bacterias de la boca pueden afectar el corazón, el cerebro y otros órganos si no se controlan adecuadamente.",
+        healthFact: "Dato: La enfermedad periodontal está relacionada con enfermedades cardíacas.",
+        
+        // Sección 3
+        section3Title: "Mitos y Realidades",
+        mythLabel: "Mito",
+        myth1: "El blanqueamiento daña el esmalte dental.",
+        myth1Explanation: "En realidad, cuando se realiza correctamente bajo supervisión, es seguro y no daña el esmalte.",
+        factLabel: "Realidad",
+        fact1: "El azúcar contribuye a la caries dental.",
+        fact1Explanation: "Las bacterias en la boca fermentan el azúcar y producen ácidos que desmineralizan el esmalte.",
+        
+        // Footer
+        copyright: "© 2025 Dental Morphology - Todos los derechos reservados"
+      },
+      en: {
+        // Header
+        title: "Complete Dental Health Guide",
+        audioBtnTitle: "Play/Pause audio",
+        langBtnTitle: "Switch to Spanish",
+        manualBtnTitle: "Manual",
+        
+        // Main
+        backButton: "Back to Simulator",
+        heroTitle: "Your smile is your best accessory!",
+        heroSubtitle: "Discover how to take care of it with scientific data and fascinating facts.",
+        
+        // Section 1
+        section1Title: "Essential Care",
+        brushingTitle: "Daily brushing",
+        brushingTip1: "Use fluoride toothpaste.",
+        brushingTip2: "Brush for at least 2 minutes, twice a day.",
+        brushingTip3: "Change your brush every 3 months.",
+        flossTitle: "Dental floss",
+        flossTip1: "Use it to remove plaque between teeth.",
+        flossTip2: "Do it gently to avoid injuries.",
+        flossTip3: "Use it daily for best results.",
+        tobaccoTitle: "Avoid tobacco",
+        tobaccoTip1: "Tobacco stains and damages your teeth.",
+        tobaccoTip2: "Increases risk of oral cancer.",
+        tobaccoTip3: "Reduces gum healing capacity.",
+        
+        // Section 2
+        section2Title: "Curiosities",
+        biteTitle: "Perfect bite",
+        biteText: "An ideal bite distributes chewing pressure evenly, preventing tooth wear.",
+        biteFact: "Fact: Less than 5% of the population has a perfect bite.",
+        healthTitle: "Oral health and general health",
+        healthText: "Bacteria in the mouth can affect the heart, brain and other organs if not properly controlled.",
+        healthFact: "Fact: Periodontal disease is linked to heart disease.",
+        
+        // Section 3
+        section3Title: "Myths and Realities",
+        mythLabel: "Myth",
+        myth1: "Whitening damages tooth enamel.",
+        myth1Explanation: "In reality, when done correctly under supervision, it's safe and doesn't damage enamel.",
+        factLabel: "Fact",
+        fact1: "Sugar contributes to tooth decay.",
+        fact1Explanation: "Bacteria in the mouth ferment sugar and produce acids that demineralize enamel.",
+        
+        // Footer
+        copyright: "© 2025 Dental Morphology Simulator in WebGL"
+      }
+    };
+    
+    // Función para cambiar el idioma
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === 'es' ? 'en' : 'es';
+      updateLanguageUI();
+      
+      // Cambiar el ícono del botón
+      langBtn.textContent = currentLanguage === 'es' ? '🇪🇸' : 'EN';
+      langBtn.title = translations[currentLanguage].langBtnTitle;
+    }
+    
+    // Función para actualizar la interfaz con el idioma seleccionado
+    function updateLanguageUI() {
+      // Actualizar todos los elementos con clase 'translate'
+      document.querySelectorAll('.translate').forEach(element => {
+        const key = element.getAttribute('data-key');
+        if (translations[currentLanguage][key]) {
+          element.textContent = translations[currentLanguage][key];
+        }
+      });
+      
+      // Actualizar atributos title
+      audioBtn.title = translations[currentLanguage].audioBtnTitle;
+      document.querySelector('[title="Manual"]').title = translations[currentLanguage].manualBtnTitle;
+      
+      // Actualizar el título de la página
+      document.title = translations[currentLanguage].title;
+    }
+    
+    // Función para simular el audio
+    function toggleAudio() {
+      audioPlaying = !audioPlaying;
+      
+      if (audioPlaying) {
+        audioBtn.textContent = '🔊';
+        audioBtn.title = translations[currentLanguage].audioBtnTitle;
+        console.log('Audio iniciado');
+      } else {
+        audioBtn.textContent = '🔇';
+        audioBtn.title = translations[currentLanguage].audioBtnTitle;
+        console.log('Audio pausado');
+      }
+    }
+    
+    // Elementos del DOM
+    const audioBtn = document.getElementById('audioBtn');
+    const langBtn = document.getElementById('langBtn');
+    
+    // Event listeners
+    audioBtn.addEventListener('click', toggleAudio);
+    langBtn.addEventListener('click', toggleLanguage);
+    
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', () => {
+      // Configurar tooltips iniciales
+      audioBtn.title = translations[currentLanguage].audioBtnTitle;
+      langBtn.title = translations[currentLanguage].langBtnTitle;
+      document.querySelector('[title="Manual"]').title = translations[currentLanguage].manualBtnTitle;
+    });
+  </script>
+</body>
+</html>
