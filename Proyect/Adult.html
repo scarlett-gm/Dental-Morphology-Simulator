@@ -8,9 +8,96 @@
       body {
         margin: 0;
         overflow: hidden;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #181e25;
       }
       canvas {
         display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: calc(100vw - 300px);
+        height: 100vh;
+        z-index: 1;
+      }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 100vh;
+        background: linear-gradient(135deg, #232b36 80%, #2c3e50 100%);
+        color: #fff;
+        z-index: 20;
+        box-shadow: -4px 0 16px rgba(0, 0, 0, 0.18);
+        overflow-y: auto;
+        padding: 0 0 30px 0;
+        border-left: 2px solid #1a222b;
+      }
+      .sidebar-header {
+        text-align: center;
+        padding: 24px 0 12px 0;
+        border-bottom: 1px solid #34495e;
+        background: rgba(44, 62, 80, 0.7);
+      }
+      .sidebar-header h3 {
+        margin: 0;
+        font-size: 1.5em;
+        letter-spacing: 1px;
+        color: #4ab2e2;
+      }
+      .teeth-options {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        padding: 18px 24px 0 24px;
+      }
+      .teeth-quadrant-title {
+        font-size: 1.1em;
+        color: #4ab2e2;
+        margin: 18px 0 6px 0;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #34495e;
+        padding-bottom: 3px;
+      }
+      .tooth-option {
+        background: #34495e;
+        border-radius: 12px;
+        padding: 10px 14px;
+        margin: 0;
+        color: #fff;
+        font-size: 1em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        border: 1px solid transparent;
+      }
+      .tooth-option:hover,
+      .tooth-option.active {
+        background: #4ab2e2;
+        color: #fff;
+        transform: translateX(-4px) scale(1.03);
+        border: 1px solid #4ab2e2;
+      }
+      #tooltip {
+        position: absolute;
+        display: none;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 3px;
+        pointer-events: none;
+        z-index: 100;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        max-width: 200px;
+        white-space: nowrap;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
       }
       #loading {
         position: absolute;
@@ -18,21 +105,198 @@
         left: 50%;
         transform: translate(-50%, -50%);
         background: rgba(255, 255, 255, 0.375);
-        color: white;
+        color: #222c36;
         padding: 20px;
         border-radius: 5px;
         text-align: center;
         font-family: Arial, sans-serif;
+        font-size: 1.2em;
+        z-index: 100;
+      }
+      button.btn.reset {
+        z-index: 30;
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        border: none;
+        color: white;
+        padding: 14px 28px;
+        cursor: pointer;
+        border-radius: 5px;
+        background-image: linear-gradient(to right, #007bff, #4ab2e2);
+        font-size: 1em;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.12);
+        transition: background 0.2s, transform 0.15s;
+      }
+      button.btn.reset:hover {
+        background-image: linear-gradient(to right, #0b7dda, #4ab2e2);
+        transform: scale(1.04);
+      }
+      button.btn.reset:active {
+        transform: scale(0.96);
+      }
+      button.btn.regresar {
+        z-index: 30;
+        position: fixed;
+        top: 90px;
+        left: 30px;
+        border: none;
+        color: white;
+        padding: 14px 28px;
+        cursor: pointer;
+        border-radius: 5px;
+        background-image: linear-gradient(to right, #e74c3c, #e67e22);
+        font-size: 1em;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.12);
+        transition: background 0.2s, transform 0.15s;
+      }
+      button.btn.regresar:hover {
+        background-image: linear-gradient(to right, #c0392b, #e67e22);
+        transform: scale(1.04);
+      }
+      button.btn.regresar:active {
+        transform: scale(0.96);
       }
     </style>
   </head>
   <body>
     <div id="loading">Loading Simulator...</div>
 
+    <div
+      id="tooltip"
+      style="
+        position: absolute;
+        display: none;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 3px;
+        pointer-events: none;
+        z-index: 100;
+      "
+    ></div>
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h3>Teeth</h3>
+      </div>
+      <div class="teeth-options">
+        <!-- Dientes Superiores Derechos (1er cuadrante) -->
+        <div class="tooth-option" data-tooth="IncisivoCentralSuperior1">
+          Incisivo Central Superior 1
+        </div>
+        <div class="tooth-option" data-tooth="IncisivoLateralSuperior2">
+          Incisivo Lateral Superior 2
+        </div>
+        <div class="tooth-option" data-tooth="CaninoSuperior1">
+          Canino Superior 1
+        </div>
+        <div class="tooth-option" data-tooth="PrimerPremolarSuperior1">
+          Primer Premolar Superior 1
+        </div>
+        <div class="tooth-option" data-tooth="SegundoPremolarSuperior1">
+          Segundo Premolar Superior 1
+        </div>
+        <div class="tooth-option" data-tooth="PrimerMolarSuperior1">
+          Primer Molar Superior 1
+        </div>
+        <div class="tooth-option" data-tooth="SegundoMolarSuperior1">
+          Segundo Molar Superior 1
+        </div>
+        <div class="tooth-option" data-tooth="TercerMolarSuperior1">
+          Tercer Molar Superior 1
+        </div>
+
+        <!-- Dientes Superiores Izquierdos (2do cuadrante) -->
+        <div class="tooth-option" data-tooth="IncisivoCentralSuperior2">
+          Incisivo Central Superior 2
+        </div>
+        <div class="tooth-option" data-tooth="IncisivoLateralSuperior2">
+          Incisivo Lateral Superior2
+        </div>
+        <div class="tooth-option" data-tooth="CaninoSuperior2">
+          Canino Superior 2
+        </div>
+        <div class="tooth-option" data-tooth="PrimerPremolarSuperior2">
+          Primer Premolar Superior 2
+        </div>
+        <div class="tooth-option" data-tooth="SegundoPremolarSuperior2">
+          Segundo Premolar Superior 2
+        </div>
+        <div class="tooth-option" data-tooth="PrimerMolarSuperior2">
+          Primer Molar Superior 2
+        </div>
+        <div class="tooth-option" data-tooth="SegundoMolarSuperior2">
+          Segundo Molar Superior 2
+        </div>
+        <div class="tooth-option" data-tooth="TercerMolarSuperior2">
+          Tercer Molar Superior 2
+        </div>
+
+        <!-- Dientes Inferiores Izquierdos (3er cuadrante) -->
+        <div class="tooth-option" data-tooth="IncisivoCentralInferior1">
+          Incisivo Central Inferior 1
+        </div>
+        <div class="tooth-option" data-tooth="IncisivoLateralInferior1">
+          Incisivo Lateral Inferior 1
+        </div>
+        <div class="tooth-option" data-tooth="CaninoInferior1">
+          Canino Inferior 1
+        </div>
+        <div class="tooth-option" data-tooth="PrimerPremolarInferior1">
+          Primer Premolar Inferior 1
+        </div>
+        <div class="tooth-option" data-tooth="SegundoPremolarInferior1">
+          Segundo Premolar Inferior 1
+        </div>
+        <div class="tooth-option" data-tooth="PrimerMolarInferior1">
+          Primer Molar Inferior 1
+        </div>
+        <div class="tooth-option" data-tooth="SegundoMolarInferior1">
+          Segundo Molar Inferior 1
+        </div>
+        <div class="tooth-option" data-tooth="TercerMolarInferior1">
+          Tercer Molar Inferior 1
+        </div>
+
+        <!-- Dientes Inferiores Derechos (4to cuadrante) -->
+        <div class="tooth-option" data-tooth="IncisivoCentralInferior2">
+          Incisivo Central Inferior 2
+        </div>
+        <div class="tooth-option" data-tooth="IncisivoLateralInferior2">
+          Incisivo Lateral Inferior 2
+        </div>
+        <div class="tooth-option" data-tooth="CaninoInferior2">
+          Canino Inferior 2
+        </div>
+        <div class="tooth-option" data-tooth="PrimerPremolarInferior2">
+          Primer Premolar Inferior 2
+        </div>
+        <div class="tooth-option" data-tooth="SegundoPremolarInferior2">
+          Segundo Premolar Inferior 2
+        </div>
+        <div class="tooth-option" data-tooth="PrimerMolarInferior2">
+          Primer Molar Inferior 2
+        </div>
+        <div class="tooth-option" data-tooth="SegundoMolarInferior2">
+          Segundo Molar Inferior 2
+        </div>
+        <div class="tooth-option" data-tooth="TercerMolarInferior2">
+          Tercer Molar Inferior 2
+        </div>
+      </div>
+    </div>
+
     <!-- Cargamos las librerias three.js y GLTFLoader -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+
+    <button class="btn reset">Restablecer dientes</button>
+    <button class="btn regresar" onclick="window.location.href='index.html'">
+      Regresar
+    </button>
 
     <!-- Conexion con el codigo JS -->
     <script src="Adult.js"></script>
