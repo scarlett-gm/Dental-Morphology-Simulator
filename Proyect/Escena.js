@@ -1,6 +1,6 @@
 let scene, camera, renderer, controls, model,sound;
 
-const MODEL_PATH = 'consultorio.glb';
+const MODEL_PATH = 'AnasRoom.glb';
 
 const rotationSpeed = 0.03;
 const keyboardState = {};
@@ -232,8 +232,8 @@ function loadModel() {
         if (intersects.length > 0) {
             const intersected = intersects[0].object;
 
-            if (intersected.name === "Chair2_blinn1_0") {
-                alert("Haz hecho clic en la Silla 2");
+            if (intersected.name === "Anas") {
+                
                // Guardar estado actual antes de cambiar
     history.pushState({ from3DScene: true }, '', window.location.href);
     
