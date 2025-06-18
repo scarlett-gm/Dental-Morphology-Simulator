@@ -1,5 +1,5 @@
 let scene, camera, renderer, controls, model;
-const MODEL_PATH = 'TeethwRoots.glb';
+const MODEL_PATH = 'Recursos/TeethwRoots.glb';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();

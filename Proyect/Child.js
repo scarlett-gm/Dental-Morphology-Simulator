@@ -1,16 +1,16 @@
 let scene, camera, renderer, controls, model;
-const MODEL_PATH = 'ChildTeethNamed.glb';
+const MODEL_PATH = 'Recursos/ChildTeethNamed.glb';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-const movedTeeth = new Map(); // Guarda dientes ya movidos
-//para el cursor sobre los dientes
+const movedTeeth = new Map(); // saves the moved teeth positions
+//for the cursor over the teeth
 const tooltip = document.createElement('div');
 tooltip.id = 'tooltip';
 document.body.appendChild(tooltip);
 
 const PosicionesD = {
-    //Un niño tiene 20 dientes:
+    //A child has 20 teeth:
     "IncisivoCentralSuperior1": new THREE.Vector3(0, 0, 0.2),
     "IncisivoCentralSuperior2": new THREE.Vector3(0, 0, 0.2),
     "IncisivoCentralInferior1": new THREE.Vector3(0, 0, -0.2),
@@ -39,7 +39,7 @@ function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111111);
     
-    // Añadir environment map
+    // Adding environment map
     const envMap = new THREE.CubeTextureLoader()
         .setPath('path/to/your/envmap/')
         .load(['px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg']);
@@ -47,7 +47,7 @@ function init() {
     scene.environment = envMap;
 
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 2, 5); // posicion inicial para que se vea la cuadricula
+    camera.position.set(0, 2, 5); // initial position
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -58,11 +58,8 @@ function init() {
     controls.enableDamping = true;
 
     setupLights();
-    cargarModelMain(); // Dentadura completa
-
-    //Cargamos aqui los nuevos modelos
-    //cargarAdditionalModel('incisivo_11.glb', new THREE.Vector3(2, 20, 0));
-    //cargarAdditionalModel('premolar.glb', new THREE.Vector3(-3, 0, 0));
+    toggleLightHelpers(false);  //LIGHT HELPERS OFF BY DEFAULT, if you want to see them, set to true
+    cargarModelMain(); // Showing complete model
 
     document.addEventListener('mousedown', onMouseClick);
     window.addEventListener('resize', onWindowResize);
@@ -82,7 +79,7 @@ function resetTeethPositions() {
     movedTeeth.clear();
 }
 renderer.domElement.addEventListener('pointerdown', (event) => {
-    if (event.button !== 0) return; // Solo clic izquierdo
+    if (event.button !== 0) return; // Just left click
 
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -92,46 +89,117 @@ renderer.domElement.addEventListener('pointerdown', (event) => {
     const intersects = raycaster.intersectObjects(scene.children, true);
 });
 
+        
+    
 function setupLights() {
-    // Configuración de luces centradas alrededor del modelo dental
-    const modelCenter = new THREE.Vector3(0, -1.5, -3.5); // Misma posición Y que tu modelo
-    const lightDistance = 5; // Distancia de las luces al centro del modelo
-    const lightIntensity = 0.7; // Intensidad media
-    const lightColor = 0xffffff;
-
-    // Posiciones de las luces (coordenadas relativas al modelo)
-    const lightPositions = [
-        new THREE.Vector3(1, 0, 0),    // Derecha
-        new THREE.Vector3(-1, 0, 0),   // Izquierda
-        new THREE.Vector3(0, 0, 1),    // Frente
-        new THREE.Vector3(0, 0, -1),   // Atrás
-        new THREE.Vector3(0, 1, 0),    // Arriba
-        new THREE.Vector3(0, -1, 0)    // Abajo (menos intensidad)
-    ];
-
-    lightPositions.forEach((pos, index) => {
-        const directionalLight = new THREE.DirectionalLight(lightColor, 
-            index === 5 ? lightIntensity * 0.5 : lightIntensity); // Luz inferior más suave
-        
-        // Posicionamos la luz relativa al centro del modelo
-        directionalLight.position.copy(pos)
-            .multiplyScalar(lightDistance)
-            .add(modelCenter);
-        
-        scene.add(directionalLight);
-
-        // DEBUG: Helpers visuales (eliminar en producción)
-        //const helper = new THREE.DirectionalLightHelper(directionalLight, 1);
-        //scene.add(helper);
+    // CLear existing lights and helpers
+    scene.children.filter(child => child.isLight || child instanceof THREE.DirectionalLightHelper).forEach(obj => {
+        scene.remove(obj);
     });
 
-    // Luz especial desde el ángulo de la cámara (para mejor visibilidad)
-    const cameraLight = new THREE.DirectionalLight(lightColor, lightIntensity * 0.8);
-    cameraLight.position.set(0, 2, 3).add(modelCenter); // Posición similar a la cámara
+    const modelCenter = new THREE.Vector3(0, -4.5, 0);
+    const lightDistance = 6;
+    const mainIntensity = 0.4;
+
+    // Array to hold lights
+    const lights = [];
+
+    // 1. Principal Lights (6 axes)
+    const mainLightPositions = [
+        { pos: new THREE.Vector3(1, 0.2, 0), color: 0xffffff, name: "Derecha" },
+        { pos: new THREE.Vector3(-1, 0.2, 0), color: 0xffffff, name: "Izquierda" },
+        { pos: new THREE.Vector3(0, 0.2, 1), color: 0xfffff, name: "Frente" },
+        { pos: new THREE.Vector3(0, 0.2, -1), color: 0xffffff, name: "Atrás" },
+        { pos: new THREE.Vector3(0, 1, 0.2), color: 0xffffff, name: "Arriba" },
+        { pos: new THREE.Vector3(0, -0.5, 0), color: 0xffffff, name: "Abajo" }
+    ];
+
+    mainLightPositions.forEach((config, i) => {
+        const light = new THREE.DirectionalLight(config.color, i === 4 ? mainIntensity * 1.2 : mainIntensity);
+        light.position.copy(config.pos).multiplyScalar(lightDistance).add(modelCenter);
+        light.name = config.name;
+        
+        if (i === 4) { // Top principal light
+            light.castShadow = true;
+            light.shadow.mapSize.width = 1024;
+            light.shadow.mapSize.height = 1024;
+        }
+
+        scene.add(light);
+        lights.push(light);
+
+        // Helper for the light
+        const helper = new THREE.DirectionalLightHelper(light, 1, 0xffffff);
+        helper.name = `${config.name} Helper`;
+        scene.add(helper);
+
+        // Adding label for the light
+        addLightLabel(light, config.name);
+    });
+
+    // 2. Camera Light
+    const cameraLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    cameraLight.position.copy(camera.position);
+    cameraLight.name = "Camera Light";
     scene.add(cameraLight);
+    lights.push(cameraLight);
+
+    // Helper for camera light
+    const cameraLightHelper = new THREE.DirectionalLightHelper(cameraLight, 0.5);
+    scene.add(cameraLightHelper);
+    addLightLabel(cameraLight, "Cámara");
+
+    // Update camera light position on camera movement
+    controls.addEventListener('change', () => {
+        cameraLight.position.copy(camera.position);
+        cameraLightHelper.update();
+        updateLightLabels();
+    });
+
+    // Function to add labels to lights
+    function addLightLabel(light, text) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 128;
+        canvas.height = 64;
+        const context = canvas.getContext('2d');
+        context.fillStyle = 'rgba(0,0,0,0.7)';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.font = 'Bold 14px Arial';
+        context.fillStyle = 'white';
+        context.textAlign = 'center';
+        context.fillText(text, canvas.width/2, canvas.height/2 + 6);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+        const sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(0.5, 0.25, 1);
+        sprite.name = `${light.name} Label`;
+        light.userData.label = sprite;
+        sprite.position.copy(light.position);
+        scene.add(sprite);
+    }
+
+    // Function to update light labels
+    function updateLightLabels() {
+        lights.forEach(light => {
+            if (light.userData.label) {
+                light.userData.label.position.copy(light.position);
+            }
+        });
+    }
 }
 
-//funcion de eventos para los dientes
+// For toggling light helpers
+    function toggleLightHelpers(visible) {
+        scene.children.forEach(child => {
+         if (child instanceof THREE.DirectionalLightHelper || 
+               (child.name && child.name.includes('Label'))) {
+              child.visible = visible;
+             }
+     });
+    }
+
+// Function to handle mouse clicks on the teeth
 function onMouseClick(event) {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -153,7 +221,7 @@ function onMouseClick(event) {
         const selected = intersects[0].object;
         const dienteName = selected.name;
 
-        //  Verifica si el diente esta 
+        //  Verifies if the clicked object is a tooth 
         if (PosicionesD[dienteName]) {
             if (!movedTeeth.has(selected)) {
                 movedTeeth.set(selected, selected.position.clone());
@@ -222,19 +290,19 @@ function cargarModelMain() {
         function(gltf) {
             model = gltf.scene;
             
-            // Asegurarse que los materiales respondan bien a la luz
+            // Make sure the model is scaled and positioned correctly
             model.traverse((child) => {
                 if (child.isMesh) {
                     child.material.envMapIntensity = 0.5;
                     child.material.needsUpdate = true;
                     
-                    // Si quieres hacer los materiales más reflectivos
+                    // Set this to make the model look more reflective
                     child.material.metalness = 0.1;
                     child.material.roughness = 0.5;
                 }
             });
             
-            model.position.set(0, -4.5, 0);
+            model.position.set(3.5, -5, -1);
             scene.add(model);
             console.log("Modelo principal cargado");
             document.getElementById('loading').style.display = 'none';
