@@ -1,6 +1,6 @@
 let scene, camera, renderer, controls, model,sound;
 
-const MODEL_PATH = 'AnasRoom.glb';
+const MODEL_PATH = 'Recursos/AnasRoom.glb';
 
 const rotationSpeed = 0.03;
 const keyboardState = {};

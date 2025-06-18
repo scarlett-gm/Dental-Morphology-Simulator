@@ -1,6 +1,6 @@
 let scene, camera, renderer, controls, model,sound;
 
-const MODEL_PATH = 'ChildRoom.glb';
+const MODEL_PATH = 'Recursos/ChildRoom.glb';
 
 const rotationSpeed = 0.03;
 const keyboardState = {};
