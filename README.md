@@ -23,7 +23,7 @@ This project is a 3D simulation of the human dentition, developed using WebGL. T
 1. Clone the repository:
 
    ```bash
-   (poner el link)
+   https://github.com/scarlett-gm/Proyecto-de-PG.git
    ```
 
 2. Open the `index.html` file in a browser that supports WebGL.
