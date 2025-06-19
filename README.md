@@ -44,8 +44,27 @@ This project is a 3D simulation of the human dentition, developed using WebGL. T
 
 ## Screenshots
 
-*Loading....*
+![Image](https://github.com/user-attachments/assets/d0d38c8e-39e3-4554-b487-f6d6ca5b9ef8)
+
+![Image](https://github.com/user-attachments/assets/2420591a-5b45-4418-a65f-b34d0048c653)
+
+![Image](https://github.com/user-attachments/assets/2c2c4ddc-687b-404d-a020-13a402ae05e5)
+
+![Image](https://github.com/user-attachments/assets/513e6b49-f180-412c-b7f7-7a88d30020ea)
+
+![Image](https://github.com/user-attachments/assets/bb937058-da4d-4e3f-83ef-27e2df927f45)
+
+![Image](https://github.com/user-attachments/assets/2b498015-5bb7-4d8e-9227-649b6bb22db2)
+
+![Image](https://github.com/user-attachments/assets/29f4fee1-3e8e-4628-81e4-663de4b27e19)
 
 ## License
 
 This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+
+## Youtube video
+
+```bash
+   link
+   ```
+
