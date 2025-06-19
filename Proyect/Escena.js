@@ -341,7 +341,7 @@ function setupAudio() {
     const dialogMessages = [
     "¡HI! Welcome to the office.",
     "Here we perform regular dental check-ups.",
-    "Click on the objects for more information."
+    "Click on the patient to see his teeth."
     ];
 
 let dialogIndex = 0;
