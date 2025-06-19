@@ -4,6 +4,7 @@ const MODEL_PATH = 'Recursos/TeethwRoots.glb';
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const movedTeeth = new Map(); // Guarda dientes ya movidos
+let cameraBounds = null; // Limite del cubo restringir la camara
 //para el cursor sobre los dientes
 const tooltip = document.createElement('div');
 tooltip.id = 'tooltip';
@@ -63,6 +64,7 @@ function init() {
 
     setupLights();
     cargarModelMain(); // Dentadura completa
+    
 
     //Cargamos aqui los nuevos modelos
     //cargarAdditionalModel('incisivo_11.glb', new THREE.Vector3(2, 20, 0));
@@ -122,6 +124,7 @@ window.addEventListener('keydown', (event) => {
 });
 
 function setupLights() {
+    //luz ambiental
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -217,6 +220,7 @@ renderer.domElement.addEventListener('pointerout', () => {
     tooltip.style.display = 'none';
 });
 
+// Funcion para cargar el modelo principal
 function cargarModelMain() {
     const loader = new THREE.GLTFLoader();
     loader.load(
@@ -224,9 +228,12 @@ function cargarModelMain() {
         function(gltf) {
             model = gltf.scene;
             // Centra el modelo en el origen
-            model.position.set(0, -4.5, 0); // Cambia estos valores según necesites
+            model.position.set(0, -4.5, 0); // Cambia estos valores segun necesites
             scene.add(model);
             console.log("Modelo principal cargado");
+
+            // Ilumina la escena con un cubo
+            iluminacionCubo(model, scene, 3, 0.4);
 
             // Oculta el mensaje de carga
             document.getElementById('loading').style.display = 'none';
@@ -260,10 +267,10 @@ function selectToothByName(toothName) {
             movedTeeth.delete(foundTooth);
         }
         //centtrar la camara en el diente seleccionado
-        const bbox = new THREE.Box3().setFromObject(foundTooth);
-        const center = bbox.getCenter(new THREE.Vector3());
-        controls.target.copy(center);
-        camera.position.copy(center.clone().add(new THREE.Vector3(0, 0, 5)));
+        //const bbox = new THREE.Box3().setFromObject(foundTooth);
+        //const center = bbox.getCenter(new THREE.Vector3());
+        //controls.target.copy(center);
+        //camera.position.copy(center.clone().add(new THREE.Vector3(0, 0, 5)));
     } else {
         console.warn(`Diente ${toothName} no encontrado en el modelo`);
     }
@@ -284,5 +291,73 @@ document.querySelectorAll('.tooth-option').forEach(option => {
 });
 
 document.querySelector('.btn.regresar').addEventListener('click', () => {
-    window.location.href = 'index.html';
+    window.location.href = 'Escena.html';
 });
+
+//iluminacion de la escena
+function iluminacionCubo(modelo, escena, tamañoCubo = 3, intensidad = 0.4) {
+    // Calcula el centro del modelo
+    const box = new THREE.Box3().setFromObject(modelo);
+    const centro = box.getCenter(new THREE.Vector3());
+
+    const d = tamañoCubo / 2;
+    const min = new THREE.Vector3(centro.x - d, centro.y - d, centro.z - d);
+    const max = new THREE.Vector3(centro.x + d, centro.y + d, centro.z + d);
+
+    cameraBounds = { min, max }; // Guardamos los límites
+
+    const esquinas = [
+        [ d,  d,  d], [ d,  d, -d], [ d, -d,  d], [ d, -d, -d],
+        [-d,  d,  d], [-d,  d, -d], [-d, -d,  d], [-d, -d, -d],
+    ];
+
+    // Crea una luz en cada esquina
+    esquinas.forEach(([x, y, z]) => {
+        const luz = new THREE.PointLight(0xffffff, intensidad);
+        luz.position.set(centro.x + x, centro.y + y, centro.z + z);
+        escena.add(luz);
+
+    });
+
+    //iluminacion en las caras abajo y arriba
+    const luzArriba = new THREE.PointLight(0xffffff, intensidad);
+    luzArriba.position.set(centro.x, centro.y + d, centro.z);
+    escena.add(luzArriba);
+
+    const luzExtraAbajo = new THREE.PointLight(0xffffff, intensidad * 2);
+    luzExtraAbajo.position.set(centro.x, centro.y - d * 1.5, centro.z);
+    escena.add(luzExtraAbajo);
+
+
+    //dibuja el cubo 
+    /*const geometry = new THREE.BoxGeometry(tamañoCubo, tamañoCubo, tamañoCubo);
+    const edges = new THREE.EdgesGeometry(geometry);
+    const line = new THREE.LineSegments(
+        edges,
+        new THREE.LineBasicMaterial({ color: 0xffffff })
+    );
+    line.position.copy(centro);
+    escena.add(line);*/
+}
+
+//funcion para evitar traspasar el modelo
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+
+    // Limita la cmara cubo
+    if (cameraBounds) {
+        const centro = cameraBounds.min.clone().add(cameraBounds.max).multiplyScalar(0.5);
+        const radio = cameraBounds.max.x - centro.x; // Suponiendo cubo centrado
+
+        const dir = camera.position.clone().sub(centro);
+        const distancia = dir.length();
+
+        if (distancia < radio) {
+            dir.normalize();
+            camera.position.copy(centro.clone().add(dir.multiplyScalar(radio)));
+        }
+    }
+
+    renderer.render(scene, camera);
+}

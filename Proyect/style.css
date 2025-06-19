@@ -1,6 +1,7 @@
 /* ─────────  RESET BÁSICO  ───────── */
 *{margin:0;padding:0;box-sizing:border-box}
 
+
 /* ─────────  TIPOGRAFÍA & FONDO  ───────── */
 body{
   font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
@@ -11,9 +12,8 @@ body{
   flex-direction:column;
 }
 
-/* ─────────  ENCABEZADO  ───────── */
 header{
-  background:linear-gradient(90deg,#00e5ff,#00bcd4);
+  background:linear-gradient(90deg,#00e5ff,#1e3a8a);
   display:flex;
   align-items:center;
   padding:15px 30px;
