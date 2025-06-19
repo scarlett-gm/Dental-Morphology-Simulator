@@ -136,6 +136,29 @@
       button.btn.reset:active {
         transform: scale(0.96);
       }
+      button.btn.regresar {
+        z-index: 30;
+        position: fixed;
+        top: 90px;
+        left: 30px;
+        border: none;
+        color: white;
+        padding: 14px 28px;
+        cursor: pointer;
+        border-radius: 5px;
+        background-image: linear-gradient(to right, #e74c3c, #e67e22);
+        font-size: 1em;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.12);
+        transition: background 0.2s, transform 0.15s;
+      }
+      button.btn.regresar:hover {
+        background-image: linear-gradient(to right, #c0392b, #e67e22);
+        transform: scale(1.04);
+      }
+      button.btn.regresar:active {
+        transform: scale(0.96);
+      }
 
       .controls-hint {
         position: fixed;
@@ -152,8 +175,8 @@
         line-height: 1.6;
         pointer-events: none;
       }
-
     </style>
+    
   </head>
   <body>
     <div id="loading">Loading Simulator...</div>
@@ -176,12 +199,12 @@
         <h3>Teeth</h3>
       </div>
       <div class="teeth-options">
-        <!-- Dientes Superiores Derechos (1er cuadrante) -->
+        <!-- Superiores Derechos -->
         <div class="tooth-option" data-tooth="IncisivoCentralSuperior1">
           Incisivo Central Superior 1
         </div>
-        <div class="tooth-option" data-tooth="IncisivoLateralSuperior2">
-          Incisivo Lateral Superior 2
+        <div class="tooth-option" data-tooth="IncisivoLateralSuperior1">
+          Incisivo Lateral Superior 1
         </div>
         <div class="tooth-option" data-tooth="CaninoSuperior1">
           Canino Superior 1
@@ -192,22 +215,12 @@
         <div class="tooth-option" data-tooth="SegundoPremolarSuperior1">
           Segundo Premolar Superior 1
         </div>
-        <div class="tooth-option" data-tooth="PrimerMolarSuperior1">
-          Primer Molar Superior 1
-        </div>
-        <div class="tooth-option" data-tooth="SegundoMolarSuperior1">
-          Segundo Molar Superior 1
-        </div>
-        <div class="tooth-option" data-tooth="TercerMolarSuperior1">
-          Tercer Molar Superior 1
-        </div>
-
-        <!-- Dientes Superiores Izquierdos (2do cuadrante) -->
+        <!-- Superiores Izquierdos -->
         <div class="tooth-option" data-tooth="IncisivoCentralSuperior2">
           Incisivo Central Superior 2
         </div>
         <div class="tooth-option" data-tooth="IncisivoLateralSuperior2">
-          Incisivo Lateral Superior2
+          Incisivo Lateral Superior 2
         </div>
         <div class="tooth-option" data-tooth="CaninoSuperior2">
           Canino Superior 2
@@ -218,8 +231,7 @@
         <div class="tooth-option" data-tooth="SegundoPremolarSuperior2">
           Segundo Premolar Superior 2
         </div>
-
-        <!-- Dientes Inferiores Izquierdos (3er cuadrante) -->
+        <!-- Inferiores Izquierdos -->
         <div class="tooth-option" data-tooth="IncisivoCentralInferior1">
           Incisivo Central Inferior 1
         </div>
@@ -235,8 +247,7 @@
         <div class="tooth-option" data-tooth="SegundoPremolarInferior1">
           Segundo Premolar Inferior 1
         </div>
-
-        <!-- Dientes Inferiores Derechos (4to cuadrante) -->
+        <!-- Inferiores Derechos -->
         <div class="tooth-option" data-tooth="IncisivoCentralInferior2">
           Incisivo Central Inferior 2
         </div>
@@ -245,6 +256,12 @@
         </div>
         <div class="tooth-option" data-tooth="CaninoInferior2">
           Canino Inferior 2
+        </div>
+        <div class="tooth-option" data-tooth="PrimerPremolarInferior2">
+          Primer Premolar Inferior 2
+        </div>
+        <div class="tooth-option" data-tooth="SegundoPremolarInferior2">
+          Segundo Premolar Inferior 2
         </div>
       </div>
     </div>
@@ -255,6 +272,9 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
 
     <button class="btn reset">Restablecer dientes</button>
+    <button class="btn regresar" onclick="window.location.href='index.html'">
+      Regresar
+    </button>
     <!-- Cuadro de controles en la esquina inferior izquierda -->
     <div class="controls-hint">
       <strong>Controles:</strong><br>

@@ -313,3 +313,56 @@ function cargarModelMain() {
         }
     );
 }
+
+// Function to select a tooth by its name
+function selectToothByName(toothName) {
+    if (!model) return;
+
+    let foundTooth = null;
+    model.traverse(child => {
+        if (child.isMesh && child.name === toothName) {
+            foundTooth = child;
+        }
+    });
+
+    if (foundTooth) {
+        // If the tooth has not been moved, it moves to the desired position
+        if (!movedTeeth.has(foundTooth)) {
+            movedTeeth.set(foundTooth, foundTooth.position.clone());
+            foundTooth.position.add(PosicionesD[toothName]);
+        } else {
+            // If the tooth has been moved, it returns to its original position
+            foundTooth.position.copy(movedTeeth.get(foundTooth));
+            movedTeeth.delete(foundTooth);
+        }
+        // Centers the camera on the selected tooth
+        const bbox = new THREE.Box3().setFromObject(foundTooth);
+        const center = bbox.getCenter(new THREE.Vector3());
+        controls.target.copy(center);
+        camera.position.copy(center.clone().add(new THREE.Vector3(0, 0, 5)));
+    } else {
+        console.warn(`Diente ${toothName} no encontrado en el modelo`);
+    }
+}
+
+// Listener fotr the tooth selection options
+document.querySelectorAll('.tooth-option').forEach(option => {
+    option.addEventListener('click', function () {
+        const toothName = this.getAttribute('data-tooth');
+        selectToothByName(toothName);
+
+        // Highlight the selected tooth option
+        document.querySelectorAll('.tooth-option').forEach(opt => {
+            opt.classList.remove('active');
+        });
+        this.classList.add('active');
+    });
+});
+
+// Event for the "Regresar" button
+const btnRegresar = document.querySelector('.btn.regresar');
+if (btnRegresar) {
+    btnRegresar.addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
+}
