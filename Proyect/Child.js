@@ -411,6 +411,6 @@ document.querySelectorAll('.tooth-option').forEach(option => {
 const btnRegresar = document.querySelector('.btn.regresar');
 if (btnRegresar) {
     btnRegresar.addEventListener('click', () => {
-        window.location.href = 'index.html';
+        window.location.href = 'Eskid.html';
     });
 }
