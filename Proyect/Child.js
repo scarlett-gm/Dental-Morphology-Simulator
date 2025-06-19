@@ -377,10 +377,10 @@ function selectToothByName(toothName) {
             movedTeeth.delete(foundTooth);
         }
         // Centers the camera on the selected tooth
-        const bbox = new THREE.Box3().setFromObject(foundTooth);
+        /*const bbox = new THREE.Box3().setFromObject(foundTooth);
         const center = bbox.getCenter(new THREE.Vector3());
         controls.target.copy(center);
-        camera.position.copy(center.clone().add(new THREE.Vector3(0, 0, 5)));
+        camera.position.copy(center.clone().add(new THREE.Vector3(0, 0, 5)));*/
     } else {
         console.warn(`Diente ${toothName} no encontrado en el modelo`);
     }
