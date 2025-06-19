@@ -1,4 +1,6 @@
 let scene, camera, renderer, controls, model;
+let hitbox, hitboxHelper;
+let showHitboxHelper = false; // Set to true to see the hitbox helper
 const MODEL_PATH = 'Recursos/ChildTeethNamed.glb';
 
 const raycaster = new THREE.Raycaster();
@@ -59,6 +61,7 @@ function init() {
 
     setupLights();
     toggleLightHelpers(false);  //LIGHT HELPERS OFF BY DEFAULT, if you want to see them, set to true
+    toggleHitboxHelper(false); // Show hitbox helper by default (off)
     cargarModelMain(); // Showing complete model
 
     document.addEventListener('mousedown', onMouseClick);
@@ -245,6 +248,21 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
+
+    // --- Collision camera-hitbox ---
+    if (hitbox) {
+        const bbox = new THREE.Box3().setFromObject(hitbox);
+        // Si la cámara está dentro del cubo, la empuja hacia afuera
+        if (bbox.containsPoint(camera.position)) {
+            // Calcula la dirección desde el centro del cubo hacia la cámara
+            const center = bbox.getCenter(new THREE.Vector3());
+            const dir = camera.position.clone().sub(center).normalize();
+            // Saca la cámara justo fuera del cubo
+            const safePos = center.clone().add(dir.multiply(bbox.getSize(new THREE.Vector3())).multiplyScalar(0.55));
+            camera.position.copy(safePos);
+        }
+    }
+
     renderer.render(scene, camera);
 }
 
@@ -304,6 +322,29 @@ function cargarModelMain() {
             
             model.position.set(3.5, -5, -1);
             scene.add(model);
+
+            // --- HITBOX ---
+            // Calculates the model bounding box
+            const bbox = new THREE.Box3().setFromObject(model);
+            const size = new THREE.Vector3();
+            const center = new THREE.Vector3();
+            bbox.getSize(size);
+            bbox.getCenter(center);
+
+            // Creates the invisible cube (hitbox)
+            const scale = 1.30; // 30% bigger than the model
+            const geometry = new THREE.BoxGeometry(size.x * scale, size.y * scale, size.z * scale);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true, visible: false });
+            hitbox = new THREE.Mesh(geometry, material);
+            hitbox.position.copy(center);
+            hitbox.raycast = () => {}; // Makes the hitbox not interact with raycasting
+            scene.add(hitbox);
+
+            // Visual helper for the hitbox
+            hitboxHelper = new THREE.BoxHelper(hitbox, 0xff0000);
+            hitboxHelper.visible = showHitboxHelper;
+            scene.add(hitboxHelper);
+
             console.log("Modelo principal cargado");
             document.getElementById('loading').style.display = 'none';
         },
@@ -312,4 +353,64 @@ function cargarModelMain() {
             console.error("Error cargando el modelo:", error);
         }
     );
+}
+
+// Function to select a tooth by its name
+function selectToothByName(toothName) {
+    if (!model) return;
+
+    let foundTooth = null;
+    model.traverse(child => {
+        if (child.isMesh && child.name === toothName) {
+            foundTooth = child;
+        }
+    });
+
+    if (foundTooth) {
+        // If the tooth has not been moved, it moves to the desired position
+        if (!movedTeeth.has(foundTooth)) {
+            movedTeeth.set(foundTooth, foundTooth.position.clone());
+            foundTooth.position.add(PosicionesD[toothName]);
+        } else {
+            // If the tooth has been moved, it returns to its original position
+            foundTooth.position.copy(movedTeeth.get(foundTooth));
+            movedTeeth.delete(foundTooth);
+        }
+        // Centers the camera on the selected tooth
+        const bbox = new THREE.Box3().setFromObject(foundTooth);
+        const center = bbox.getCenter(new THREE.Vector3());
+        controls.target.copy(center);
+        camera.position.copy(center.clone().add(new THREE.Vector3(0, 0, 5)));
+    } else {
+        console.warn(`Diente ${toothName} no encontrado en el modelo`);
+    }
+}
+
+function toggleHitboxHelper(show) {
+    showHitboxHelper = show;
+    if (hitboxHelper) hitboxHelper.visible = show;
+    if (hitbox) hitbox.material.visible = show;
+}
+// Example: toggleHitboxHelper(true) for showing, toggleHitboxHelper(false) for hiding
+
+// Listener fotr the tooth selection options
+document.querySelectorAll('.tooth-option').forEach(option => {
+    option.addEventListener('click', function () {
+        const toothName = this.getAttribute('data-tooth');
+        selectToothByName(toothName);
+
+        // Highlight the selected tooth option
+        document.querySelectorAll('.tooth-option').forEach(opt => {
+            opt.classList.remove('active');
+        });
+        this.classList.add('active');
+    });
+});
+
+// Event for the "Regresar" button
+const btnRegresar = document.querySelector('.btn.regresar');
+if (btnRegresar) {
+    btnRegresar.addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
 }

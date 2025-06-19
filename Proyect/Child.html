@@ -53,15 +53,6 @@
       gap: 18px;
       padding: 18px 24px 0 24px;
     }
-    .teeth-quadrant-title {
-      font-size: 1.1em;
-      color: #4ab2e2;
-      margin: 18px 0 6px 0;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid #34495e;
-      padding-bottom: 3px;
-    }
     .tooth-option {
       background: #34495e;
       border-radius: 12px;
@@ -136,6 +127,29 @@
     button.btn.reset:active {
       transform: scale(0.96);
     }
+    button.btn.regresar {
+      z-index: 30;
+      position: absolute;
+      top: 90px;
+      left: 30px;
+      border: none;
+      color: white;
+      padding: 14px 28px;
+      cursor: pointer;
+      border-radius: 5px;
+      background-image: linear-gradient(to right, #e74c3c, #e67e22);
+      font-size: 1em;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(44, 62, 80, 0.12);
+      transition: background 0.2s, transform 0.15s;
+    }
+    button.btn.regresar:hover {
+      background-image: linear-gradient(to right, #c0392b, #e67e22);
+      transform: scale(1.04);
+    }
+    button.btn.regresar:active {
+      transform: scale(0.96);
+    }
     .controls-hint {
       position: fixed;
       left: 24px;
@@ -156,67 +170,68 @@
     @media (max-width: 768px) {
       canvas {
         width: 100vw;
+        left: 0;
+        position: absolute;
       }
-
       .sidebar {
-        position: fixed;
         width: 100vw;
         height: auto;
         max-height: 50vh;
         bottom: 0;
         top: auto;
         right: 0;
-        overflow-y: auto;
         border-left: none;
         border-top: 2px solid #1a222b;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.18);
       }
-
       .sidebar-header {
         padding: 12px 0;
       }
-
       .teeth-options {
         flex-wrap: wrap;
         flex-direction: row;
         gap: 10px;
         padding: 10px 12px;
       }
-
       .tooth-option {
         flex: 1 1 48%;
         font-size: 0.9em;
         padding: 8px 10px;
       }
-
-      .controls-hint {
-        font-size: 0.85em;
-        padding: 10px 16px;
-        left: 12px;
-        bottom: 12px;
-      }
-
       button.btn.reset {
         padding: 10px 20px;
         font-size: 0.9em;
         top: 12px;
         left: 12px;
       }
+      button.btn.regresar {
+        top: 60px;
+        left: 12px;
+        padding: 10px 20px;
+        font-size: 0.9em;
+      }
+      .controls-hint {
+        font-size: 0.85em;
+        padding: 10px 16px;
+        left: 12px;
+        bottom: 12px;
+      }
     }
   </style>
 </head>
 <body>
   <div id="loading">Loading Simulator...</div>
-
   <div id="tooltip"></div>
+
+  <canvas id="scene-canvas"></canvas>
 
   <div class="sidebar">
     <div class="sidebar-header">
       <h3>Teeth</h3>
     </div>
     <div class="teeth-options">
-      <!-- Lista de dientes aquí -->
       <div class="tooth-option" data-tooth="IncisivoCentralSuperior1">Incisivo Central Superior 1</div>
-      <div class="tooth-option" data-tooth="IncisivoLateralSuperior2">Incisivo Lateral Superior 2</div>
+      <div class="tooth-option" data-tooth="IncisivoLateralSuperior1">Incisivo Lateral Superior 1</div>
       <div class="tooth-option" data-tooth="CaninoSuperior1">Canino Superior 1</div>
       <div class="tooth-option" data-tooth="PrimerPremolarSuperior1">Primer Premolar Superior 1</div>
       <div class="tooth-option" data-tooth="SegundoPremolarSuperior1">Segundo Premolar Superior 1</div>
@@ -224,7 +239,7 @@
       <div class="tooth-option" data-tooth="SegundoMolarSuperior1">Segundo Molar Superior 1</div>
       <div class="tooth-option" data-tooth="TercerMolarSuperior1">Tercer Molar Superior 1</div>
       <div class="tooth-option" data-tooth="IncisivoCentralSuperior2">Incisivo Central Superior 2</div>
-      <div class="tooth-option" data-tooth="IncisivoLateralSuperior2">Incisivo Lateral Superior2</div>
+      <div class="tooth-option" data-tooth="IncisivoLateralSuperior2">Incisivo Lateral Superior 2</div>
       <div class="tooth-option" data-tooth="CaninoSuperior2">Canino Superior 2</div>
       <div class="tooth-option" data-tooth="PrimerPremolarSuperior2">Primer Premolar Superior 2</div>
       <div class="tooth-option" data-tooth="SegundoPremolarSuperior2">Segundo Premolar Superior 2</div>
@@ -239,11 +254,8 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
-
   <button class="btn reset">Restablecer dientes</button>
+  <button class="btn regresar" onclick="window.location.href='index.html'">Regresar</button>
 
   <div class="controls-hint">
     <strong>Controles:</strong><br>
@@ -252,6 +264,9 @@
     Zoom: Rueda
   </div>
 
+  <!-- Three.js and controls -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
   <script src="Child.js"></script>
 </body>
-</html>
