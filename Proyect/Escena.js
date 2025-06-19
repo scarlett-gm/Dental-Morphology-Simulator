@@ -30,7 +30,7 @@ function init() {
     setupCameraControls();
     setupKeyboardControls();
     setupLighting();
-     setupAudio(); 
+    setupAudio(); 
     loadModel();
 
     window.addEventListener('resize', onWindowResize);
@@ -372,55 +372,3 @@ window.addEventListener('keydown', function (e) {
     advanceDialog();
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

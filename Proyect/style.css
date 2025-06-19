@@ -12,7 +12,6 @@ body{
   flex-direction:column;
 }
 
-/* ─────────  ENCABEZADO  ───────── */
 header{
   background:linear-gradient(90deg,#00e5ff,#1e3a8a);
   display:flex;
