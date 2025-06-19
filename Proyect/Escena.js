@@ -208,7 +208,7 @@ function loadModel() {
         },
         (xhr) => {
             const percent = (xhr.loaded / xhr.total * 100).toFixed(0);
-            document.getElementById('loading').textContent = `Cargando: ${percent}%`;
+            document.getElementById('loading').textContent = `Loading: ${percent}%`;
         },
         (error) => {
             console.error('Error:', error);
@@ -339,9 +339,9 @@ function setupAudio() {
     
 
     const dialogMessages = [
-    "¡Hola! Bienvenido al consultorio.",
-    "Aquí realizamos controles dentales regulares.",
-    "Haz clic en los objetos para obtener más información."
+    "¡HI! Welcome to the office.",
+    "Here we perform regular dental check-ups.",
+    "Click on the patient to see his teeth."
     ];
 
 let dialogIndex = 0;
