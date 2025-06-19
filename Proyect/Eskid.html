@@ -124,7 +124,6 @@
       justify-content: center;
     }
 
-    /* Controles Inferiores */
     #controls-hint {
       position: fixed;
       bottom: 0;
@@ -150,10 +149,75 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.6; }
     }
+
+    /* Botón regresar */
+    a[href="index.html"] {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: #5bc0eb;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 1001;
+      transition: background-color 0.3s;
+    }
+
+    a[href="index.html"]:hover {
+      background-color: #3aaedc;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .dialog-box {
+        flex-direction: column;
+        padding: 15px;
+        bottom: 80px;
+      }
+
+      .portrait {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 10px auto;
+      }
+
+      .arrow {
+        font-size: 18px;
+      }
+
+      .message {
+        font-size: 14px;
+      }
+
+      .audio-control {
+        width: 36px;
+        height: 36px;
+        top: 10px;
+        right: 10px;
+      }
+
+      #controls-hint {
+        font-size: 13px;
+        padding: 8px;
+      }
+
+      a[href="index.html"] {
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="loading">Cargando consultorio...</div>
+  <!-- Botón para regresar al index.html -->
+  <a href="index.html">← Back</a>
+
+  <div id="loading">Loading...</div>
 
   <div class="dialog-box" id="dialog-box">
     <div class="portrait"></div>
@@ -165,7 +229,7 @@
   </div>
 
   <div id="controls-hint">
-    [W][A][S][D] para mover la cámara &nbsp;&nbsp;|&nbsp;&nbsp; [ENTER] para continuar
+    [W][A][S][D] move the camera &nbsp;&nbsp;|&nbsp;&nbsp; [ENTER] to continue
   </div>
 
   <div id="audio-control" class="audio-control">

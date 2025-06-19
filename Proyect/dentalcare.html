@@ -25,6 +25,14 @@
       --sombra: rgba(59, 130, 246, 0.2);
     }
 
+    header{
+  background:linear-gradient(90deg,#00e5ff,#1e3a8a);
+  display:flex;
+  align-items:center;
+  padding:15px 30px;
+  box-shadow:0 4px 8px rgba(0,0,0,.2);
+}
+
     /* Reset básico */
     * {
       box-sizing: border-box;
@@ -421,9 +429,8 @@
     <img src="Recursos/logo.png" alt="Logo" id="logo" />
     <h1 class="translate" data-key="title">Guía Completa de Salud Dental</h1>
     <div class="utilidades">
-      <button id="audioBtn" class="util-btn" title="Reproducir/Pausar audio">🔊</button>
       <button id="langBtn" class="util-btn" title="Cambiar idioma">🇪🇸</button>
-      <a href="Recursos/manual.pdf" target="_blank" class="util-btn" title="Manual">📘</a>
+      <a href="Recursos/Manual.pdf" target="_blank" class="util-btn" title="Manual">📘</a>
     </div>
   </header>
 
@@ -544,7 +551,6 @@
   <!-- ────────────────  SCRIPTS  ──────────────── -->
   <script>
     // Variables de estado
-    let audioPlaying = false;
     let currentLanguage = 'es'; 
     
     // Textos en diferentes idiomas
@@ -653,7 +659,7 @@
       updateLanguageUI();
       
       // Cambiar el ícono del botón
-      langBtn.textContent = currentLanguage === 'es' ? '🇪🇸' : 'EN';
+      langBtn.textContent = currentLanguage === 'es' ? '🇪🇸' : 'en';
       langBtn.title = translations[currentLanguage].langBtnTitle;
     }
     
@@ -668,40 +674,21 @@
       });
       
       // Actualizar atributos title
-      audioBtn.title = translations[currentLanguage].audioBtnTitle;
       document.querySelector('[title="Manual"]').title = translations[currentLanguage].manualBtnTitle;
       
       // Actualizar el título de la página
       document.title = translations[currentLanguage].title;
     }
     
-    // Función para simular el audio
-    function toggleAudio() {
-      audioPlaying = !audioPlaying;
-      
-      if (audioPlaying) {
-        audioBtn.textContent = '🔊';
-        audioBtn.title = translations[currentLanguage].audioBtnTitle;
-        console.log('Audio iniciado');
-      } else {
-        audioBtn.textContent = '🔇';
-        audioBtn.title = translations[currentLanguage].audioBtnTitle;
-        console.log('Audio pausado');
-      }
-    }
-    
-    // Elementos del DOM
-    const audioBtn = document.getElementById('audioBtn');
+   
     const langBtn = document.getElementById('langBtn');
     
     // Event listeners
-    audioBtn.addEventListener('click', toggleAudio);
     langBtn.addEventListener('click', toggleLanguage);
     
     // Inicialización
     document.addEventListener('DOMContentLoaded', () => {
       // Configurar tooltips iniciales
-      audioBtn.title = translations[currentLanguage].audioBtnTitle;
       langBtn.title = translations[currentLanguage].langBtnTitle;
       document.querySelector('[title="Manual"]').title = translations[currentLanguage].manualBtnTitle;
     });
