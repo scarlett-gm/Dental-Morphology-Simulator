@@ -13,7 +13,7 @@ body{
 
 /* ─────────  ENCABEZADO  ───────── */
 header{
-  background:linear-gradient(90deg,#00e5ff,#00bcd4);
+  background:linear-gradient(90deg,#00e5ff,#1e3a8a);
   display:flex;
   align-items:center;
   padding:15px 30px;

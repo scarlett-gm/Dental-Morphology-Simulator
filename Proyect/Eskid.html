@@ -153,7 +153,25 @@
   </style>
 </head>
 <body>
-  <div id="loading">Cargando consultorio...</div>
+   <!-- Botón para regresar al index.html -->
+  <a href="index.html" style="
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #5bc0eb;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 1001;
+    transition: background-color 0.3s;
+  " onmouseover="this.style.backgroundColor='#3aaedc'"
+    onmouseout="this.style.backgroundColor='#5bc0eb'">
+    ← Back
+  </a>
+  <div id="loading">Loading...</div>
 
   <div class="dialog-box" id="dialog-box">
     <div class="portrait"></div>
@@ -165,7 +183,7 @@
   </div>
 
   <div id="controls-hint">
-    [W][A][S][D] para mover la cámara &nbsp;&nbsp;|&nbsp;&nbsp; [ENTER] para continuar
+    [W][A][S][D] move the camera &nbsp;&nbsp;|&nbsp;&nbsp; [ENTER] to continue
   </div>
 
   <div id="audio-control" class="audio-control">
