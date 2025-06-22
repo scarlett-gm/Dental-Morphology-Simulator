@@ -36,6 +36,13 @@ This project is a 3D simulation of the human dentition, developed using WebGL. T
 * View individual teeth by navigating through the dental model.
 * Future versions may include interactive tooth selection and labels.
 
+## Autors
+
+- María Reyes – Developer of adult dental morphology.  [GitHub](https://github.com/Caroreyes22)
+- Scarlett Martinez – Graphical interface developer.  [GitHub](https://github.com/scarlett-gm)
+- Harold Molina – 3D modeling in Blender and developer of children's dental morphology.  [GitHub](https://github.com/Yafferth14)
+- Manuel Herrera – Dental office environment developer.  [GitHub](https://github.com/Mamuel0312)
+
 ## Goals
 
 * Visualize both **primary (baby)** and **permanent (adult)** dentitions.
